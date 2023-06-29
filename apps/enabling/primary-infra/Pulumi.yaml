@@ -1,0 +1,3 @@
+name: zen-hackathon-dev
+runtime: nodejs
+description: POC for zen ephemeral environments with S3 and pulumi
