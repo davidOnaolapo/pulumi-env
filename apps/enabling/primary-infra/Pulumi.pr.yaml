@@ -1,4 +1,4 @@
 config:
   aws:region: us-east-1
-  aws_access_key_id: AKIAXNVWKJZK7RPTKE2J
-  aws_secret_access_key: 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
+  aws:accessKey: AKIAXNVWKJZK7RPTKE2J
+  aws:secretKey: 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
