@@ -1,5 +1,4 @@
 name: zen-hackathon-dev
 runtime: nodejs
 description: pulumi ephemeral env poc
-run: |
- pulumi config set aws:region
+  
