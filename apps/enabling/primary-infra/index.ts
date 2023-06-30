@@ -1,36 +1,24 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 
-// Create an IAM user
-const pulumiUser = new aws.iam.User("pulumi-user");
+const bucketName = "ephemeral-bucket";
 
-// Create API keys for the user
-const pulumiAccessKey = new aws.iam.AccessKey("pulumi-access-key", {
-  user: pulumiUser.name,
-});
+// Create an AWS resource (S3 Bucket)
+let bucket = new aws.s3.Bucket(bucketName, {});
 
-// Use the ARN of your IAM user as the Principal in your bucket policy
-const bucket = new aws.s3.Bucket("my-bucket");
-const bucketPolicy = new aws.s3.BucketPolicy("my-bucket-policy", {
+// Create an S3 bucket policy to allow public deletion
+let deletionPolicy = new aws.s3.BucketPolicy(`${bucketName}Policy`, {
   bucket: bucket.id,
-  policy: pulumi
-    .all([bucket.arn, pulumiUser.arn])
-    .apply(([bucketArn, userArn]) =>
-      JSON.stringify({
-        Version: "2012-10-17",
-        Statement: [
-          {
-            Sid: "PulumiDeleteObject",
-            Effect: "Allow",
-            Principal: { AWS: userArn },
-            Action: "s3:DeleteObject",
-            Resource: bucketArn + "/*",
-          },
-        ],
-      })
-    ),
+  policy: {
+    Version: "2012-10-17",
+    Statement: [
+      {
+        Sid: "PublicDelete",
+        Effect: "Allow",
+        Principal: "*",
+        Action: "s3:DeleteObject",
+        Resource: pulumi.interpolate`${bucket.arn}/*`,
+      },
+    ],
+  },
 });
-
-// Export the access keys, you will need them to configure the AWS provider in Pulumi
-export const accessKeyId = pulumiAccessKey.id;
-export const secretAccessKey = pulumiAccessKey.secret;
