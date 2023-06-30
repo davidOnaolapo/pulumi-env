@@ -1,0 +1,27 @@
+name: Pulumi PR Triggers
+on:
+  - pull_request
+jobs:
+  preview:
+    name: Preview
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3.5.0
+        with:
+          node-version-file: package.json
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-region: us-east-1
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - run: npm install
+        working-directory: apps/enabling/primary-infra
+      - uses: pulumi/actions@v3
+        with:
+          command: preview
+          stack-name: zen-hackathon/pr
+          work-dir: apps/enabling/primary-infra
+        env:
+          PULUMI_ACCESS_TOKEN: "pul-8eab079d0f808a01d4134027850a37884d687c64"
