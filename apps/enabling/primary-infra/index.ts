@@ -4,7 +4,7 @@ import * as command from "@pulumi/command";
 
 const bucketName = "ephemeral-buckett";
 
-// Build the application
+// Build the applicaton
 const buildApp = new command.local.Command("build-app", {
   create: "npm install && npm run build",
   dir: "../app",
