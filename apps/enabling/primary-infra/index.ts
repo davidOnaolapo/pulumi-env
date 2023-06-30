@@ -6,8 +6,8 @@ const bucketName = "ephemeral-buckett";
 
 // Build the application
 const buildApp = new command.local.Command("build-app", {
-  create: "npm run build", // replace with your build command
-  dir: "../app", // replace with your application directory
+  create: "npm install && npm run build",
+  dir: "../app",
 });
 
 // Create an AWS resource (S3 Bucket)
